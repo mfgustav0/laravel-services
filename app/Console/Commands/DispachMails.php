@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Repository\Console\Commands\DispachMailsRepository;
+use App\Repositories\Console\Commands\DispachMailsRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

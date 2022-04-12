@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository\Console\Commands;
+namespace App\Repositories\Console\Commands;
 
 use App\Mail\Sale\ConfirmedSaleMail;
 use App\Mail\Sale\PendentSaleMail;
