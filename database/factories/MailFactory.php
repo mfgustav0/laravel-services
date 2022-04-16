@@ -54,7 +54,8 @@ class MailFactory extends Factory
             'name' => $this->faker->name(),
             'telephone' => $this->faker->phoneNumber(),
             'number' => $this->faker->phoneNumber(),
-            'email' => $this->faker->unique()->safeEmail(),
+            // 'email' => $this->faker->unique()->safeEmail(),
+            'email' => 'gustavo.monteiro@flexsystems.com.br',
         ]);
     }
 }
