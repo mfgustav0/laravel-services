@@ -10,7 +10,7 @@ class DispachMails extends Command
 {
     CONST SECONDS_TIMEOUT = 2.3;
 
-    private $repository = null;
+    private DispachMailsRepository $repository;
 
     public function __construct(DispachMailsRepository $repository) {
         parent::__construct();
