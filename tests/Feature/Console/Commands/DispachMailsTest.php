@@ -4,13 +4,13 @@ namespace Tests\Feature\Console\Commands;
 
 use App\Models\Mail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class DispachMailsTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
+    use DatabaseMigrations;
 
     public function testOutputIfNotExistsRegitersForSend(): void
     {
