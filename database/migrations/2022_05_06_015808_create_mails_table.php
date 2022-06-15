@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('mails', function (Blueprint $table) {
             $table->id();
 
-            $table->string('database')->nullable();
+            $table->unsignedBigInteger('database_id');
             $table->json('sale');
             $table->json('client');
             $table->string('type');
@@ -24,6 +24,8 @@ return new class extends Migration
             $table->enum('status', [0, 1, 2]);
             $table->timestamp('sended_at', $precision = 0)->nullable();
             $table->timestamp('last_sended_at', $precision = 0)->nullable();
+
+            $table->foreign('database_id')->references('id')->on('databases');
             $table->timestamps();
         });
     }
