@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Database;
 use App\Models\Mail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -15,7 +16,7 @@ class MailFactory extends Factory
     public function definition(): array
     {
         return [
-            'database' => $this->faker->randomElement(['database-models', 'database-uuids', 'database-clients']),
+            'database_id' => Database::factory(),
             'sale' => $this->generateSale(),
             'client' => $this->generateClient(),
             'type' => $this->faker->randomElement(['confirmed', 'pendent', 'sended']),
