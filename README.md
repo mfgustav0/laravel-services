@@ -1,3 +1,3 @@
-# Mail Dispatch Laravel Service
+# Serviço de disparo de E-mail
 
-- Application for dispatching [email] based on database records
+- Aplicação disparo de e-mail com base em regitros nas tabelas
