@@ -2,69 +2,39 @@
 
 namespace App\Console\Commands;
 
-use App\Repositories\Console\Commands\DispachMailsRepository;
+use App\Models\Mail;
+use App\Services\MailService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class DispachMails extends Command
 {
     CONST SECONDS_TIMEOUT = 2.3;
 
-    private DispachMailsRepository $repository;
-
-    public function __construct(DispachMailsRepository $repository) {
-        parent::__construct();
-        $this->repository = $repository;
-    }
-
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'dispach:mails';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Send remaining emails';
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle(): int
+    public function handle(MailService $service, Mail $model): int
     {
-        $mails = $this->getMails();
-        if(!$mails) {
+        $mails = $model->pendents();
+        if(!$mails->count()) {
             $this->info('No records to send');
-            return 0;
+            return self::SUCCESS;
         }
 
-        foreach($mails as $mail) {
+        $mails->each(function(Mail $mail) use($service) {
             $this->info("Mail [{$mail->id}] Sending..");
 
-            $result = $this->repository->dispach($mail);
+            $result = $service->send($mail);
 
-            if($result) {
-                $this->info("Mail [{$mail->id}] Sended!");
-            } else {
-                $this->error("Erro on update mail [{$mail->id}] in table");                
-            }
+            $mail->update($result);
+
+            $this->info("Mail [{$mail->id}] Sended!");
 
             sleep(self::SECONDS_TIMEOUT);
-        }
-        $this->info('Mails sendeds');
-        return 1;
-    }
+        });
 
-    private function getMails(): array
-    {
-        return DB::table('mails')
-                ->whereIn('status', ['0', '2'])
-                ->get()->toArray();
+        $this->info('Mails sendeds');
+        return self::SUCCESS;
     }
 }

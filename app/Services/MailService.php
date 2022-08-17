@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Repositories\Console\Commands;
+namespace App\Services;
 
+use App\Exceptions\Mail\InvalidTypeMailException;
 use App\Mail\Sale\ConfirmedSaleMail;
 use App\Mail\Sale\PendentSaleMail;
 use App\Mail\Sale\SendedSaleMail;
-use App\Exceptions\Mail\InvalidTypeMailException;
+use App\Models\Mail AS MailModel;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\DB;
 
-class DispachMailsRepository
+class MailService
 {
 	private array $types = [
         'confirmed' => ConfirmedSaleMail::class,
@@ -17,30 +17,15 @@ class DispachMailsRepository
         'sended' => SendedSaleMail::class
     ];
 
-    public function dispach(object $mail): bool
-    {
-    	$update = $this->send($mail);
-
-    	$affected = DB::table('mails')
-            ->where('id', $mail->id)
-            ->update($update);
-
-        return $affected > 0;
-    }
-
-	private function send(object $mail): array
+	public function send(MailModel $mail): array
     {
         try {
-            $model = $this->types[$mail->type] ?? null;
-
-            if(!$model && !is_callable($model)) {
-                throw new InvalidTypeMailException("type of mail [{$mail->id}] not allowed", 2);
-            }
+            $class = $this->getMailable($mail->type);
 
             $client = json_decode($mail->client);
             $sale = json_decode($mail->sale);
 
-            Mail::to($client->email)->send(new $model($sale, $client));
+            Mail::to($client->email)->send(new $class($sale, $client));
 
             return [
                 'observation' => 'email dispached',
@@ -55,5 +40,16 @@ class DispachMailsRepository
                 'last_sended_at' => date('Y-m-d H:i:s')
             ];
         }
+    }
+
+    private function getMailable(string $type): string
+    {
+		$class = $this->types[$type] ?? null;
+
+		if(!$class && !is_callable($class)) {
+		    throw new InvalidTypeMailException("type of mail not allowed", 2);
+		}
+
+		return $class;
     }
 }

@@ -31,7 +31,7 @@ class DispachMailsTest extends TestCase
         $this->artisan('dispach:mails')
             ->assertSuccessful()
             ->expectsOutput('Mails sendeds')
-            ->assertExitCode(1);
+            ->assertExitCode(0);
     }
 
 
@@ -45,11 +45,11 @@ class DispachMailsTest extends TestCase
         $this->artisan('dispach:mails')
             ->assertSuccessful()
             ->expectsOutput('Mails sendeds')
-            ->assertExitCode(1);
+            ->assertExitCode(0);
 
         $this->assertDatabaseHas('mails', [
             'id' => $mail->id,
-            'observation' => "type of mail [{$mail->id}] not allowed",
+            'observation' => "type of mail not allowed",
             'status' => '2'
         ]);
     }
