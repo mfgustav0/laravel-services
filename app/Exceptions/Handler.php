@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use App\Services\Telegram\Telegram;
+use App\Helper\ShowExceptionError;
 
 class Handler extends ExceptionHandler
 {
@@ -35,7 +37,10 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
+            $message = ShowExceptionError::handle($e);
+            $telegram = app()->make(Telegram::class);
+
+            $telegram->sendMessage(config('telegram.chat-log'), $message);
         });
     }
 }
