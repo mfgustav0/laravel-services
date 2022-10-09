@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Mail\MailType;
 use App\Models\Database;
 use App\Models\Mail;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -19,21 +20,21 @@ class MailFactory extends Factory
             'database_id' => Database::factory(),
             'sale' => $this->generateSale(),
             'client' => $this->generateClient(),
-            'type' => $this->faker->randomElement(['confirmed', 'pendent', 'sended']),
-            'status' => $this->faker->randomElement(['0', '2'])
+            'type' => fake()->randomElement(MailType::cases()),
+            'status' => fake()->randomElement(['0', '2'])
         ];
     }
 
-    private function generateSale(): string
+    private function generateSale(): array
     {
-        return json_encode([
-            'id' => $this->faker->numberBetween(1, 9999),
-            'saled_at' => $this->faker->date() . ' ' . $this->faker->time(),
-            'value_total' => $this->faker->randomFloat(2),
-            'city' => $this->faker->city(),
-            'method_payment' => $this->faker->randomElement(['cred_cart', 'payment_slip', 'pix']),
+        return [
+            'id' => fake()->numberBetween(1, 9999),
+            'saled_at' => fake()->date() . ' ' . fake()->time(),
+            'value_total' => fake()->randomFloat(2),
+            'city' => fake()->city(),
+            'method_payment' => fake()->randomElement(['cred_cart', 'payment_slip', 'pix']),
             'products' => $this->generateProducts(rand(2, 5))
-        ]);
+        ];
     }
 
     private function generateProducts(int $quantity=1): array
@@ -41,22 +42,22 @@ class MailFactory extends Factory
         $produts = [];
         for ($i = 0; $i < $quantity; $i++) { 
             $produts[] = [
-                'description' => $this->faker->word(),
-                'quantity' => $this->faker->numberBetween(0, 100),
-                'value' => $this->faker->randomFloat(2),
+                'description' => fake()->word(),
+                'quantity' => fake()->numberBetween(0, 100),
+                'value' => fake()->randomFloat(2),
             ];
         }
         return $produts;
     }
 
-    private function generateClient(): string
+    private function generateClient(): array
     {
-        return json_encode([
-            'name' => $this->faker->name(),
-            'telephone' => $this->faker->phoneNumber(),
-            'number' => $this->faker->phoneNumber(),
-            // 'email' => $this->faker->unique()->safeEmail(),
+        return [
+            'name' => fake()->name(),
+            'telephone' => fake()->phoneNumber(),
+            'number' => fake()->phoneNumber(),
+            // 'email' => fake()->unique()->safeEmail(),
             'email' => 'gustavo.monteiro@flexsystems.com.br',
-        ]);
+        ];
     }
 }
