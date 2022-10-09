@@ -14,13 +14,10 @@ class SendedMailTest extends TestCase
     public function testMailableContent(): void
     {
         $mail = Mail::factory()->create();
-        $client = json_decode($mail->client);
-        $sale = json_decode($mail->sale);
+        $mailable = new SendedSaleMail($mail->sale, $mail->client);
 
-        $mailable = new SendedSaleMail($sale, $client);
-
-        $mailable->assertSeeInHtml("Olá {$client->name}! Seu pedido {$sale->id} foi Enviado! Em breve seu pedido chegará em sua casa!");
-        foreach($sale->products as $product) {
+        $mailable->assertSeeInHtml("Olá {$mail->client->name}! Seu pedido {$mail->sale->id} foi Enviado! Em breve seu pedido chegará em sua casa!");
+        foreach($mail->sale->products as $product) {
             $product = (array)$product;
             $mailable->assertSeeInOrderInHtml(array_values($product));
         }
