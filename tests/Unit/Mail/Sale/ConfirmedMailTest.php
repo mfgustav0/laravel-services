@@ -14,13 +14,10 @@ class ConfirmedMailTest extends TestCase
     public function testMailableContent(): void
     {
         $mail = Mail::factory()->create();
-        $client = json_decode($mail->client);
-        $sale = json_decode($mail->sale);
+        $mailable = new ConfirmedSaleMail($mail->sale, $mail->client);
 
-        $mailable = new ConfirmedSaleMail($sale, $client);
-
-        $mailable->assertSeeInHtml("Olá {$client->name}! Seu pedido {$sale->id} foi confirmado! Em breve seu pedido será enviado");
-        foreach($sale->products as $product) {
+        $mailable->assertSeeInHtml("Olá {$mail->client->name}! Seu pedido {$mail->sale->id} foi confirmado! Em breve seu pedido será enviado");
+        foreach($mail->sale->products as $product) {
             $product = (array)$product;
             $mailable->assertSeeInOrderInHtml(array_values($product));
         }

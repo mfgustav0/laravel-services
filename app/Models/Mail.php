@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Casts\Json;
 use App\Models\Database;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
 
 class Mail extends Model
 {
@@ -21,6 +23,11 @@ class Mail extends Model
         'last_sended_at',
         'database_id',
     ];
+    
+    protected $casts = [
+        'client' => Json::class,
+        'sale' => Json::class,
+    ];
 
     public function database()
     {
@@ -31,5 +38,12 @@ class Mail extends Model
     {
         return $this->whereIn('status', ['0', '2'])
                 ->get();
+    }
+
+    protected function type(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => str($value)->upper(),
+        );
     }
 }
