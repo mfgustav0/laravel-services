@@ -20,8 +20,8 @@ class DatabaseFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'database-' . $this->faker->word(),
-            'status' => $this->faker->boolean()
+            'name' => 'database-' . fake()->word(),
+            'status' => fake()->boolean()
         ];
     }
 }
