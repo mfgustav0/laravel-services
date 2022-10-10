@@ -37,10 +37,12 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            $message = ShowExceptionError::handle($e);
-            $telegram = app()->make(Telegram::class);
+            if(config('telegram.log')) {
+                $message = ShowExceptionError::handle($e);
+                $telegram = app()->make(Telegram::class);
 
-            $telegram->sendMessage(config('telegram.chat-log'), $message);
+                $telegram->sendMessage(config('telegram.chat-log'), $message);
+            }
         });
     }
 }

@@ -4,10 +4,10 @@ namespace App\Services\Telegram;
 
 use GuzzleHttp\Client;
 use App\Exceptions\Telegram\InvalidTokenException;
+use Illuminate\Support\Facades\Log;
 
 class Telegram
 {
-	private string $base_uri = 'https://api.telegram.org/bot';
 	private string $bot_name;
 	private string $api_key;
 	private int $bot_id;
@@ -38,7 +38,7 @@ class Telegram
 	private function request(string $type, string $end_point, array $payload=[]): array
 	{
 		$client = new Client([
-			'base_uri' => "{$this->base_uri}{$this->api_key}/",
+			'base_uri' => "https://api.telegram.org/bot{$this->api_key}/",
 			'timeout' => 60
 		]);
 
@@ -61,6 +61,7 @@ class Telegram
 			];
 		}
 
+		Log::error(json_encode(['telegram' => json_decode($response->getBody()->getContents())]));
 		return [
 			'success' => true,
 			'response' => [
