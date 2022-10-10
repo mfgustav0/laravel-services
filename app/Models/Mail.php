@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\Json;
+use App\Enums\Mail\MailStatus;
 use App\Models\Database;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,6 +28,7 @@ class Mail extends Model
     protected $casts = [
         'client' => Json::class,
         'sale' => Json::class,
+        'status' => MailStatus::class
     ];
 
     public function database()
@@ -36,7 +38,7 @@ class Mail extends Model
 
     public function pendents(): Collection
     {
-        return $this->whereIn('status', ['0', '2'])
+        return $this->whereIn('status', [MailStatus::PENDENT, MailStatus::FAILURE])
                 ->get();
     }
 

@@ -18,7 +18,7 @@ class MailService
 
             return [
                 'observation' => 'email dispached',
-                'status' => '1',
+                'status' => MailType::SUCCESS,
                 'sended_at' => date('Y-m-d H:i:s'),
                 'last_sended_at' => date('Y-m-d H:i:s')
             ];
@@ -35,7 +35,7 @@ class MailService
     {
 		$class = MailType::tryFrom($type) ?? null;
 		if(!$class && !is_callable($class)) {
-		    throw new InvalidTypeMailException("type of mail not allowed", 2);
+		    throw new InvalidTypeMailException('type of mail not allowed', 2);
 		}
 
 		return $class;

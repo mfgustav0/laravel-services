@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Mail\MailStatus;
 use App\Enums\Mail\MailType;
 use App\Models\Database;
 use App\Models\Mail;
@@ -21,7 +22,7 @@ class MailFactory extends Factory
             'sale' => $this->generateSale(),
             'client' => $this->generateClient(),
             'type' => fake()->randomElement(MailType::cases()),
-            'status' => fake()->randomElement(['0', '2'])
+            'status' => fake()->randomElement(MailStatus::cases())
         ];
     }
 
@@ -56,8 +57,7 @@ class MailFactory extends Factory
             'name' => fake()->name(),
             'telephone' => fake()->phoneNumber(),
             'number' => fake()->phoneNumber(),
-            // 'email' => fake()->unique()->safeEmail(),
-            'email' => 'gustavo.monteiro@flexsystems.com.br',
+            'email' => fake()->unique()->safeEmail(),
         ];
     }
 }

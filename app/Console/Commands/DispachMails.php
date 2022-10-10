@@ -12,29 +12,32 @@ class DispachMails extends Command
 
     protected $signature = 'dispach:mails';
 
-    protected $description = 'Send remaining emails';
+    protected $description = 'Send remaining email`s';
 
     public function handle(MailService $service, Mail $model): int
     {
         $mails = $model->pendents();
         if(!$mails->count()) {
-            $this->info('No records to send');
+            $this->warn('No records to send');
             return self::SUCCESS;
         }
 
-        $mails->each(function(Mail $mail) use($service) {
-            $this->info("Mail [{$mail->id}] Sending..");
-
-            $result = $service->send($mail);
-
-            $mail->update($result);
-
-            $this->info("Mail [{$mail->id}] Sended!");
-
-            sleep(self::SECONDS_TIMEOUT);
-        });
+        $mails->each(fn(Mail $mail) => $this->send($mail, $service));
 
         $this->info('Mails sendeds');
         return self::SUCCESS;
+    }
+
+    private function send(Mail $mail, MailService $service): void
+    {
+        $this->warn("Mail [{$mail->id}] Sending..");
+
+        $result = $service->send($mail);
+
+        $mail->update($result);
+
+        $this->info("Mail [{$mail->id}] Sended!");
+
+        sleep(self::SECONDS_TIMEOUT);
     }
 }

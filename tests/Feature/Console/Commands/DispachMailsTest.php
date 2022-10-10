@@ -2,9 +2,10 @@
 
 namespace Tests\Feature\Console\Commands;
 
+use App\Enums\Mail\MailStatus;
 use App\Models\Mail;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class DispachMailsTest extends TestCase
@@ -14,7 +15,7 @@ class DispachMailsTest extends TestCase
 
     public function testOutputIfNotExistsRegitersForSend(): void
     {
-        $result = Mail::whereIn('status', ['0', '2'])->count();
+        $result = (new Mail())->pendents()->count();
 
         $this->artisan('dispach:mails')
             ->assertSuccessful()
@@ -26,7 +27,7 @@ class DispachMailsTest extends TestCase
 
     public function testMailsSendeds(): void
     {
-        $mails = Mail::factory(5)->state(['status' => '0'])->create();
+        $mails = Mail::factory(5)->state(['status' => MailStatus::PENDENT])->create();
 
         $this->artisan('dispach:mails')
             ->assertSuccessful()
@@ -34,12 +35,11 @@ class DispachMailsTest extends TestCase
             ->assertExitCode(0);
     }
 
-
     public function testMailTypeInvalid(): void
     {
         $mail = Mail::factory()->state([
             'type' => 'invalid',
-            'status' => '0'
+            'status' => MailStatus::PENDENT
         ])->create();
 
         $this->artisan('dispach:mails')
@@ -50,7 +50,7 @@ class DispachMailsTest extends TestCase
         $this->assertDatabaseHas('mails', [
             'id' => $mail->id,
             'observation' => "type of mail not allowed",
-            'status' => '2'
+            'status' => MailStatus::FAILURE
         ]);
     }
 }
