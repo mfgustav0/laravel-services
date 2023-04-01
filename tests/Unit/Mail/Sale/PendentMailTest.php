@@ -4,13 +4,10 @@ namespace Tests\Unit\Mail\Sale;
 
 use App\Mail\Sale\PendentSaleMail;
 use App\Models\Mail;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class PendentMailTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testMailableContent(): void
     {
         $mail = Mail::factory()->create();

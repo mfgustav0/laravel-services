@@ -4,15 +4,10 @@ namespace Tests\Feature\Console\Commands;
 
 use App\Enums\Mail\MailStatus;
 use App\Models\Mail;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class DispachMailsTest extends TestCase
 {
-    use DatabaseTransactions;
-    use DatabaseMigrations;
-
     public function testOutputIfNotExistsRegitersForSend(): void
     {
         $result = (new Mail())->pendents()->count();
